@@ -1,26 +1,32 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Pagination from '../components/Pagination.jsx';
 import Filters from '../components/Filters.jsx';
 import useQueryFilters from '../hooks/useQueryFilters';
-import { getProducts, updateProduct, createProduct, deleteProduct } from '../api/products.js';
+import { getQuotesClients, getQuotesClientById, createQuotesClient, updateQuotesClient, deleteQuotesClient } from '../api/QuotesClients.js';
+import { getClients } from '../api/clients.js';
 import Table from '../components/Table.jsx';
-import { Create } from '../components/Create.jsx';
-import { schemaProducts as schema, d } from '../data/data.js';
+import { CreatePage } from "./Create.jsx"
+import { schemaQuotesClients as schema, d } from '../data/data.js';
+import { CreateContext } from '../context/createContext.jsx';
 
 
-export default function Products() {
+
+export default function QuotesClients() {
     const { filters, setFilters } = useQueryFilters({ schema, d });
-    const [data, setData] = useState({ productos: [], total: 0, page: 1, totalPages: 1 });
+    const [data, setData] = useState({ QuotesClients: [], total: 0, page: 1, totalPages: 1 });
     const [loading, setLoading] = useState(false);
+    const {setFunctions} = useContext(CreateContext)
+    
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            await getProducts(filters)
+            await getQuotesClients(filters)
                 .then(response => {
                     const d = response.data
                     setData({
-                        productos: d.data || [],
+                        QuotesClients: d.data || [],
                         total: d.total || 0,
                         page: filters.page || 1,
                         totalPages: Math.ceil((d.total || 0) / (filters.limit || 10))
@@ -39,12 +45,10 @@ export default function Products() {
 
     return (
         <div style={{ display:'grid', gap:16 }}>
-            <h1>Productos</h1>
+            <h1>Proveedores</h1>
 
-            <Create
-                fields={schema}
-                create={createProduct}
-                load={load}/>
+            <Link to="/create/QuotesClients">Crear</Link>
+            
             <Filters
                 initial={filters}
                 schema={schema}
@@ -55,11 +59,11 @@ export default function Products() {
             {loading ? <p>Cargando…</p> : (
                 <>
                     <Table
-                        data={data.productos}
+                        data={data.QuotesClients}
                         columns={schema}
-                        update={updateProduct}
+                        update={updateQuotesClient}
                         load={load}
-                        onDelete={deleteProduct}
+                        onDelete={deleteQuotesClient}
                     />
                     <Pagination
                         page={data.page}

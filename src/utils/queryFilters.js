@@ -1,14 +1,15 @@
 // src/utils/queryFilters.js
-export function parseQuery(searchParams, schema) {
+export function parseQuery(searchParams, schema, d) {
     // schema: { nombre:'string', precio_max:'number', stock_min:'number', tags:'array' }
+    schema = [...schema, ...d]
     const obj = {};
-    for (const key in schema) {
-        const type = schema[key];
-        const v = searchParams.get(key);
+    for (const param of schema) {
+        const type = param.type;
+        const v = searchParams.get(param.name);
 
         if (v == null || v === '') continue;
-        if (type === 'number') obj[key] = Number(v);
-        else obj[key] = v;
+        if (type === 'number') obj[param.name] = Number(v);
+        else obj[param.name] = v;
         
     }
     return obj;

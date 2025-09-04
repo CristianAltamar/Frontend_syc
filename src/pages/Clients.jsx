@@ -2,25 +2,25 @@ import { useEffect, useState, useCallback } from 'react';
 import Pagination from '../components/Pagination.jsx';
 import Filters from '../components/Filters.jsx';
 import useQueryFilters from '../hooks/useQueryFilters';
-import { getProducts, updateProduct, createProduct, deleteProduct } from '../api/products.js';
+import { getClients, createClient, updateClient, deleteClient } from '../api/clients.js';
 import Table from '../components/Table.jsx';
 import { Create } from '../components/Create.jsx';
-import { schemaProducts as schema, d } from '../data/data.js';
+import { schemaThird as schema, d } from '../data/data.js';
 
 
-export default function Products() {
+export default function Clients() {
     const { filters, setFilters } = useQueryFilters({ schema, d });
-    const [data, setData] = useState({ productos: [], total: 0, page: 1, totalPages: 1 });
+    const [data, setData] = useState({ clients: [], total: 0, page: 1, totalPages: 1 });
     const [loading, setLoading] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            await getProducts(filters)
+            await getClients(filters)
                 .then(response => {
                     const d = response.data
                     setData({
-                        productos: d.data || [],
+                        clients: d.data || [],
                         total: d.total || 0,
                         page: filters.page || 1,
                         totalPages: Math.ceil((d.total || 0) / (filters.limit || 10))
@@ -39,11 +39,11 @@ export default function Products() {
 
     return (
         <div style={{ display:'grid', gap:16 }}>
-            <h1>Productos</h1>
+            <h1>Clientes</h1>
 
             <Create
                 fields={schema}
-                create={createProduct}
+                create={createClient}
                 load={load}/>
             <Filters
                 initial={filters}
@@ -55,11 +55,11 @@ export default function Products() {
             {loading ? <p>Cargando…</p> : (
                 <>
                     <Table
-                        data={data.productos}
+                        data={data.clients}
                         columns={schema}
-                        update={updateProduct}
+                        update={updateClient}
                         load={load}
-                        onDelete={deleteProduct}
+                        onDelete={deleteClient}
                     />
                     <Pagination
                         page={data.page}

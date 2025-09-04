@@ -2,25 +2,25 @@ import { useEffect, useState, useCallback } from 'react';
 import Pagination from '../components/Pagination.jsx';
 import Filters from '../components/Filters.jsx';
 import useQueryFilters from '../hooks/useQueryFilters';
-import { getProducts, updateProduct, createProduct, deleteProduct } from '../api/products.js';
+import { getSupplier, createSupplier, updateSupplier, deleteSupplier } from '../api/suppliers.js';
 import Table from '../components/Table.jsx';
 import { Create } from '../components/Create.jsx';
-import { schemaProducts as schema, d } from '../data/data.js';
+import { schemaThird as schema, d } from '../data/data.js';
 
 
-export default function Products() {
+export default function Suppliers() {
     const { filters, setFilters } = useQueryFilters({ schema, d });
-    const [data, setData] = useState({ productos: [], total: 0, page: 1, totalPages: 1 });
+    const [data, setData] = useState({ Suppliers: [], total: 0, page: 1, totalPages: 1 });
     const [loading, setLoading] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            await getProducts(filters)
+            await getSupplier(filters)
                 .then(response => {
                     const d = response.data
                     setData({
-                        productos: d.data || [],
+                        Suppliers: d.data || [],
                         total: d.total || 0,
                         page: filters.page || 1,
                         totalPages: Math.ceil((d.total || 0) / (filters.limit || 10))
@@ -39,12 +39,13 @@ export default function Products() {
 
     return (
         <div style={{ display:'grid', gap:16 }}>
-            <h1>Productos</h1>
+            <h1>Proveedores</h1>
 
             <Create
                 fields={schema}
-                create={createProduct}
-                load={load}/>
+                create={createSupplier}
+                load={load}
+            />
             <Filters
                 initial={filters}
                 schema={schema}
@@ -55,11 +56,11 @@ export default function Products() {
             {loading ? <p>Cargando…</p> : (
                 <>
                     <Table
-                        data={data.productos}
+                        data={data.Suppliers}
                         columns={schema}
-                        update={updateProduct}
+                        update={updateSupplier}
                         load={load}
-                        onDelete={deleteProduct}
+                        onDelete={deleteSupplier}
                     />
                     <Pagination
                         page={data.page}

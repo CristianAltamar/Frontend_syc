@@ -1,4 +1,4 @@
-import axios from "axiosInstance.js";
+import axios from "./axiosInstance.js";
 
 export const getQuotesClients = (params) => axios.get('/quotesClients', { params });
 export const getQuotesClientById = (id) => axios.get(`/quotesClients/${id}`);
